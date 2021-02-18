@@ -1,55 +1,27 @@
 <template>
-  <!-- <highlightjs autodetect :code="code" /> -->
-  <!-- <highlightjs language="javascript" code="var x = 10;" /> -->
-  <pre>
-    <code class="javascript">{{ code }}</code>
-  </pre>
+  <HighlightCode :code="code" />
 </template>
 
 <script>
-import hljs from 'highlight.js';
-import { onMounted } from 'vue';
-
-/* distribute classnames from parent elements to each individual letter,
- * wrapping each letter in a span */
-const parseElement = (ele, cname) => {
-  if (ele.nodeName === 'SPAN') {
-    cname = cname + ' ' + ele.className;
-    return Array.from(ele.childNodes).reduce(
-      (acc, e) =>
-        acc.concat(
-          parseElement(e, cname + (e.className ? ' ' + e.className : ''))
-        ),
-      []
-    );
-  }
-
-  return Array.from(ele.textContent.split('')).map(
-    (letter) => `<span class="${cname} pending">${letter}</span>`
-  );
-};
+import HighlightCode from './HighlightCode';
+import "./code.scss";
+import { onMounted } from "vue";
+import { parseCode } from "./code";
 
 export default {
-  name: 'Code',
+  name: "Code",
+  components: {
+    HighlightCode,
+  },
   setup() {
     onMounted(() => {
-      document.querySelectorAll('pre code').forEach((block) => {
-        hljs.highlightBlock(block);
-      });
-
-      const code = document.querySelector('pre code');
-      let res = [];
-      for (const node of code.childNodes) {
-        if (node.className === 'hljs-comment') {
-          res.push(node.outerHTML);
-        } else {
-          res = res.concat(parseElement(node, ''));
-        }
-      }
-
-      code.innerHTML = res.join('');
+      const code = document.querySelector("pre code");
+      let res = parseCode(code);
+      console.log("res: ", res);
+      code.innerHTML = res.join("");
     });
   },
+
   data() {
     return {
       code: `function initProps (vm: Component, propsOptions: Object) {
@@ -103,18 +75,3 @@ export default {
   },
 };
 </script>
-
-<style>
-pre {
-  text-align: left;
-  font-size: 14px;
-  line-height: 1.3rem;
-  margin: 0 5em 0 10%;
-  padding: 2em 0;
-  position: relative;
-}
-
-.pending {
-  color: #657b83 !important;
-}
-</style>

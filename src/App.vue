@@ -6,7 +6,8 @@
 
 <script>
 import Timer from './components/Timer.vue';
-import Code from './components/Code.vue';
+import Code from './components/code/Code.vue';
+import './styles/theme.scss';
 
 export default {
   name: 'App',
