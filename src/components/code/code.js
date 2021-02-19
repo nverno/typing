@@ -19,8 +19,8 @@ export const parseElement = (ele, cname) => {
   return parts.reduce((acc, text, idx) => {
     /* mark preceding spaces on newlines to skip */
     let i = 0;
-    while (text[i] === ' ') ++i;
-    acc.push(`<span class='skip'>${text.slice(0, i)}</span>`);
+    while (idx !== len - 1 && text[i] === ' ') ++i;
+    if (i > 0) acc.push(`<span class='skip'>${text.slice(0, i)}</span>`);
 
     let res = acc.concat(
       text
