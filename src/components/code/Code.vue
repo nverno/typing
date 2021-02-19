@@ -6,7 +6,7 @@
 import HighlightCode from './HighlightCode';
 import "./code.scss";
 import { onMounted } from "vue";
-import { parseCode } from "./code";
+/* import { parseCode } from "./code"; */
 
 export default {
   name: "Code",
@@ -15,10 +15,10 @@ export default {
   },
   setup() {
     onMounted(() => {
-      const code = document.querySelector("pre code");
-      let res = parseCode(code);
-      console.log("res: ", res);
-      code.innerHTML = res.join("");
+      /* const code = document.querySelector("pre code"); */
+      /* let res = parseCode(code);
+       * console.log("res: ", res);
+       * code.innerHTML = res.join(""); */
     });
   },
 
