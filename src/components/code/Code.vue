@@ -1,27 +1,25 @@
 <template>
-  <HighlightCode :code="code" />
+  <HighlightCode :code="code" @highlight-code="setupCode" />
 </template>
 
 <script>
 import HighlightCode from './HighlightCode';
+import { parseCode } from "./code";
 import "./code.scss";
-import { onMounted } from "vue";
-/* import { parseCode } from "./code"; */
 
 export default {
   name: "Code",
   components: {
     HighlightCode,
   },
-  setup() {
-    onMounted(() => {
-      /* const code = document.querySelector("pre code"); */
-      /* let res = parseCode(code);
-       * console.log("res: ", res);
-       * code.innerHTML = res.join(""); */
-    });
+  methods: {
+    setupCode() {
+      const code = document.querySelector("pre code");
+      let res = parseCode(code);
+      console.log("res: ", res);
+      code.innerHTML = res.join("");
+    }
   },
-
   data() {
     return {
       code: `function initProps (vm: Component, propsOptions: Object) {

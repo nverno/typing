@@ -13,6 +13,7 @@ import hljs from "highlight.js";
 export default {
   name: "HighlightedCode",
   props: ['code'],
+  emits: ['highlight-code'],
   data() {
     return {
       language: null,
@@ -27,6 +28,7 @@ export default {
         hljs.highlightBlock(block);
         this.language = block.classList.item(block.classList.length - 1);
       });
+      this.$emit("highlight-code");
     },
     updateLanguage() {
       let ele = document.querySelector("#code");
