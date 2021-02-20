@@ -70,8 +70,10 @@ export default class TypingSession {
   markIncorrect() {
     if (this.backtrack) {
       this.addClass('collateral');
+      ++this.collateral;
     } else {
       this.addClass('incorrect');
+      ++this.incorrect;
       this.setBacktrack(true);
     }
   }
@@ -91,8 +93,17 @@ export default class TypingSession {
   // TODO: toggle timer
   pause() {}
 
-  // TODO: return session statistics
-  report() {}
+  // session statistics
+  report() {
+    return {
+      incorrect: this.incorrect,
+      collateral: this.collateral,
+    };
+  }
+
+  isFinished() {
+    return !this.backtrack && this.activeIndex === this.nodes.length - 1;
+  }
 
   // move the cursor
   step({ newline, backspace }) {
@@ -107,7 +118,10 @@ export default class TypingSession {
           remove: ['collateral', 'incorrect'],
         });
         if (this.activeIndex > 0) --this.activeIndex;
-      } else ++this.activeIndex;
+      } else {
+        if (this.activeIndex < this.nodes.length - 1) ++this.activeIndex;
+        else break;
+      }
     } while (
       this.contains('skip') ||
       (newline && this.nodes[this.activeIndex].innerText.match(/\s/))
@@ -136,8 +150,11 @@ export default class TypingSession {
         (key === target || (isNewline && target === '\n'))
       ) {
         console.log(`Correct: ${key} === ${target}`);
-        if (this.backtrack) this.setBacktrack(false);
-        this.step({ newline: isNewline });
+        if (this.isFinished()) {
+          // TODO:
+          console.log(this.report());
+          this.reset();
+        } else this.step({ newline: isNewline });
       } else {
         console.log(`'${key}' is incorrect`);
         this.markIncorrect();

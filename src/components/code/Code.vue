@@ -22,7 +22,8 @@ export default {
   },
   data() {
     return {
-      code: `function initProps (vm: Component, propsOptions: Object) {
+      code: `function initProps (vm: Component, propsOptions: Object) {`,
+      code1: `function initProps (vm: Component, propsOptions: Object) {
   const propsData = vm.$options.propsData || {}
   const props = vm._props = {}
   // cache prop keys so that future props updates can iterate using Array
