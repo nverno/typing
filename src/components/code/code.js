@@ -1,3 +1,10 @@
+const createSpan = (txt, cls) => {
+  let span = document.createElement('span');
+  span.innerHTML = txt;
+  span.className = cls;
+  return span;
+};
+
 /* distribute classnames from parent elements to each individual letter,
  * wrapping each letter in a span */
 export const parseElement = (ele, cname) => {
@@ -13,28 +20,33 @@ export const parseElement = (ele, cname) => {
   }
 
   /* debugger; */
-  let parts = Array.from(ele.textContent.split('\n')),
-    len = parts.length;
+  let nl = false;
+  return Array.from(ele.textContent.split('')).map(l => {
+    let cn;
+    if (nl && l.match(/\s/)) {
+      cn = 'skip';
+    } else if (l === '\n') {
+      nl = true;
+      cn = 'return pending';
+    } else {
+      nl = false;
+      cn = `${cname} pending`;
+    }
+    return createSpan(l, cn);
+  });
+};
 
-  return parts.reduce((acc, text, idx) => {
-    /* mark preceding spaces on newlines to skip */
-    let i = 0;
-    while (idx !== len - 1 && text[i] === ' ') ++i;
-    if (i > 0) acc.push(`<span class='skip'>${text.slice(0, i)}</span>`);
-
-    let res = acc.concat(
-      text
-        .slice(i)
-        .split('')
-        .map(letter => `<span class="${cname} pending">${letter}</span>`)
-    );
-
-    if (idx !== len - 1)
-      res.push(`<span class='return pending'>
-</span>`);
-
-    return res;
-  }, []);
+const markSpaceAfterComments = nodes => {
+  let comment = false;
+  nodes.forEach(node => {
+    if (comment && node.textContent.match(/\s/)) {
+      node.classList.add('skip');
+    } else if (node.classList.contains('hljs-comment')) {
+      comment = true;
+    } else {
+      comment = false;
+    }
+  });
 };
 
 // Parse highlighted pre-highlighted code nodes
@@ -46,11 +58,12 @@ export const parseCode = code => {
   for (const node of code.childNodes) {
     if (node.className === 'hljs-comment') {
       node.classList.add('skip');
-      res.push(node.outerHTML);
+      res.push(node);
     } else {
       res = res.concat(parseElement(node, ''));
     }
   }
 
+  markSpaceAfterComments(res);
   return res;
 };

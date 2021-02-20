@@ -34,7 +34,7 @@ code span.active:before {
 
 code span.incorrect {
   background-color: var(--np-incorrect);
-  outline-color: var(--np-backspace);
+  outline-color: var(--np-backtrack);
   color: var(--np-active);
 }
 code span.incorrect:after,
@@ -46,19 +46,23 @@ code span.incorrect:before {
  * When incorrect text has been entered, and must backspace
  * before continuing 
  */
-.backspace code span.active {
+.backtrack {
+  --np-active-background: var(--np-backtrack);
+}
+
+code.backtrack span.active {
   position: relative;
-  background-color: var(--np-backspace);
+  /* background-color: var(--np-backtrack); */
   outline: none;
 }
-.backspace .active:after {
-  background-color: var(--np-backspace-missed);
+code.backtrack .active:after {
+  background-color: var(--np-backtrack-missed);
 }
-.backspace code span.active:after,
-.backspace code span.active:before {
-  color: var(--np-backspace);
+code.backtrack span.active:after,
+code.backtrack span.active:before {
+  color: var(--np-backtrack);
 }
-.backspace code span.active:after {
+code.backtrack span.active:after {
   content: '\21e6';
   font-size: 2em;
   position: absolute;

@@ -1,6 +1,8 @@
 <template>
   <div class="typing-container">
     <button @click="start">Start Typing</button>
+    <button @click="stop">Stop</button>
+    <button @click="reset">Reset</button>
     <slot />
   </div>
 </template>
@@ -20,6 +22,12 @@ export default {
   methods: {
     start() {
       this.tsession.start();
+    },
+    stop() {
+      this.tsession.stop();
+    },
+    reset() {
+      this.tsession.reset();
     }
   }
 }
