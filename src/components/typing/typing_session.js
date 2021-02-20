@@ -5,7 +5,12 @@ export default class TypingSession {
     this.activeIndex = 0;
     this.incorrect = 0;
     this.collateral = 0;
+    this.misses = {};
     this.backtrack = false;
+    this.seconds = 0;
+    this.timer = null;
+    this.paused = true;
+    this.finished = false;
     this.handleInput = this.handleInput.bind(this);
     this.reset = this.reset.bind(this);
   }
@@ -13,15 +18,26 @@ export default class TypingSession {
   reset() {
     this.stop();
     this.setBacktrack(false);
+    this.setFinished(false);
     if (this.nodes) {
       Array.from(this.nodes).forEach(node => {
-        node.classList.remove('active', 'incorrect', 'collateral');
+        node.classList.remove(
+          'active',
+          'incorrect',
+          'collateral',
+          'wasincorrect',
+          'wascollateral'
+        );
         node.classList.add('pending');
       });
     }
+    this.misses = {};
     this.activeIndex = 0;
     this.incorrect = 0;
     this.collateral = 0;
+    this.seconds = 0;
+    this.paused = true;
+    this.finished = false;
   }
 
   // Manage classes of letter nodes
@@ -35,12 +51,18 @@ export default class TypingSession {
   }
 
   updateClasses({ add, remove }) {
-    for (const cls of remove) {
-      this.removeClass(cls);
-    }
-    for (const cls of add) {
-      this.addClass(cls);
-    }
+    if (remove)
+      for (const cls of remove) {
+        this.removeClass(cls);
+      }
+    if (add)
+      for (const cls of add) {
+        this.addClass(cls);
+      }
+  }
+
+  activeChar() {
+    return this.nodes[this.activeIndex].innerText;
   }
 
   contains(cls) {
@@ -69,40 +91,72 @@ export default class TypingSession {
   // if this is the first incorrect input in sequence, toggles backtrack state
   markIncorrect() {
     if (this.backtrack) {
-      this.addClass('collateral');
+      this.updateClasses({ add: ['collateral', 'wascollateral'] });
       ++this.collateral;
     } else {
-      this.addClass('incorrect');
+      const c = this.activeChar();
+      this.updateClasses({ add: ['incorrect', 'wasincorrect'] });
       ++this.incorrect;
+      if (this.misses[c]) ++this.misses[c];
+      else this.misses[c] = 1;
       this.setBacktrack(true);
     }
   }
 
-  // TODO: needs to handle timer
+  startTimer() {
+    this.paused = false;
+    this.timer = setInterval(() => {
+      ++this.seconds;
+    }, 1000);
+  }
+
+  stopTimer() {
+    this.paused = true;
+    clearInterval(this.timer);
+  }
+
   start() {
     this.nodes = document.getElementById(this.elementId).childNodes;
     this.reset();
+    this.startTimer();
     this.markActive();
     window.addEventListener('keydown', this.handleInput);
   }
 
   stop() {
     window.removeEventListener('keydown', this.handleInput);
+    this.stopTimer();
   }
 
-  // TODO: toggle timer
-  pause() {}
+  pause() {
+    if (this.paused) {
+      this.startTimer();
+    } else {
+      this.stopTimer();
+    }
+  }
 
   // session statistics
   report() {
     return {
       incorrect: this.incorrect,
       collateral: this.collateral,
+      misses: this.misses,
     };
   }
 
   isFinished() {
     return !this.backtrack && this.activeIndex === this.nodes.length - 1;
+  }
+
+  setFinished(on) {
+    this.finished = on;
+    let cl = document.getElementById(this.elementId).classList;
+    cl.remove('finished');
+    if (on) {
+      cl.add('finished');
+      this.removeClass('active');
+    }
   }
 
   // move the cursor
@@ -149,14 +203,12 @@ export default class TypingSession {
         !this.backtrack &&
         (key === target || (isNewline && target === '\n'))
       ) {
-        console.log(`Correct: ${key} === ${target}`);
         if (this.isFinished()) {
-          // TODO:
+          this.setFinished(true);
+          this.stop();
           console.log(this.report());
-          this.reset();
         } else this.step({ newline: isNewline });
       } else {
-        console.log(`'${key}' is incorrect`);
         this.markIncorrect();
         this.step({ newline: isNewline });
       }

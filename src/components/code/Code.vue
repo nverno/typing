@@ -16,7 +16,6 @@ export default {
     setupCode() {
       const code = document.querySelector("pre code");
       let res = parseCode(code);
-      console.log("res: ", res);
       code.innerHTML = res.map(el => el.outerHTML).join('');
     }
   },

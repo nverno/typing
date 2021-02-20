@@ -74,3 +74,16 @@ code.backtrack span.active:after {
 code .collateral {
   color: var(--np-collateral) !important;
 }
+
+/* 
+ * Finished: highlight missed chars
+ */
+code.finished span {
+  color: var(--np-finished);
+}
+code.finished span.wascollateral {
+  color: var(--np-wascollateral);
+}
+code.finished span.wasincorrect {
+  color: var(--np-wasincorrect);
+}

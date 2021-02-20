@@ -1,19 +1,10 @@
 <template>
-  <p>{{ seconds }} seconds have elapsed</p>
+  <p>{{ seconds }} seconds elapsed</p>
 </template>
 
 <script>
 export default {
   name: 'Timer',
-  data() {
-    return {
-      seconds: 0,
-    };
-  },
-  created() {
-    setInterval(() => {
-      this.seconds++;
-    }, 1000);
-  }
+  props: ['seconds'],
 }
 </script>
