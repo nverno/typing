@@ -11,10 +11,6 @@ import { ts } from './typing/typing_session';
 export default {
   name: 'Timer',
   props: ['seconds', 'state'],
-  mounted() {
-    console.log("this.state: ", this.state);
-    console.log("ts: ", ts);
-  },
   computed: {
     className() {
       const paused = this.state & ts.PAUSED,
