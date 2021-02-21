@@ -18,7 +18,7 @@ app.config.globalProperties.$filters = {
   },
 
   percent(n) {
-    return '%' + 100 * n.toFixed(2);
+    return '%' + Math.round(100 * n);
   },
 };
 

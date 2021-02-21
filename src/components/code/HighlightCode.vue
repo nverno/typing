@@ -95,6 +95,10 @@ pre {
     outline: none;
     border: none;
     border-bottom: 1px solid grey;
+
+    &:hover, &:focus {
+      background-color: #fdf6e3;
+    }
   }
 
   h4 {
