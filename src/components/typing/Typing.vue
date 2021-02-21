@@ -1,19 +1,30 @@
 <template>
   <div class="typing-container">
-    <button @click="start">Start</button>
-    <button @click="stop">Stop</button>
-    <button @click="pause">
-      {{ paused ? 'Unpause' : "Pause" }}
-    </button>
-    <button @click="reset">Reset</button>
+    <div class="controls">
+      <div v-if="state == ts.INACTIVE">
+        <button @click="tsession.start">Start</button>
+      </div>
+      <div v-else-if="Boolean(state & ts.ACTIVE)">
+        <button @click="tsession.pause">
+          {{ state & ts.PAUSED ? 'Unpause' : "Pause" }}
+        </button>
+        <!-- <button @click="stop">Stop</button> -->
+        <button @click="tsession.reset">Reset</button>
+      </div>
+      <div v-else-if="Boolean(state & ts.FINISHED)">
+        <button @click="tsession.reset">Reset</button>        
+      </div>
+    </div>
+
     <Timer :seconds="seconds" />
     <slot />
   </div>
 </template>
 
 <script>
-import TypingSession from './typing_session';
+import TypingSession, { ts } from './typing_session';
 import Timer from '../Timer';
+import { reactive, ref, toRefs, } from 'vue';
 
 export default {
   name: 'Typing',
@@ -22,37 +33,21 @@ export default {
     Timer,
   },
 
-  data() {
+  setup(props) {
+    const state = ref(ts.INACTIVE);
+    const setState = (newState) => {
+      return (state.value = newState);
+    };
+    const tsession = reactive(new TypingSession(props.codeId, state, setState));
+
+    let { seconds } = toRefs(tsession);
     return {
-      tsession: new TypingSession(this.codeId),
-      paused: false,
-      timer: null,
-      seconds: 0,
+      ts,
+      tsession,
+      state,
+      seconds
     };
   },
-  watch: {
-    "tsession.seconds": function(newVal) {
-      this.seconds = newVal;
-    },
-    "tsession.paused": function(newVal) {
-      this.paused = newVal;
-    }
-  },
-
-  methods: {
-    start() {
-      this.tsession.start();
-    },
-    stop() {
-      this.tsession.stop();
-    },
-    reset() {
-      this.tsession.reset();
-    },
-    pause() {
-      this.tsession.pause();
-    },
-  }
 }
 </script>
 

@@ -1,5 +1,13 @@
+// typing states
+export const ts = {
+  INACTIVE: 0, // no timer, no session
+  ACTIVE: 1, // timer exists, may/may not be running
+  PAUSED: 2, // timer paused
+  FINISHED: 4, // session complete
+};
+
 export default class TypingSession {
-  constructor(elementId) {
+  constructor(elementId, state, setState) {
     this.elementId = elementId;
     this.nodes = null;
     this.activeIndex = 0;
@@ -9,10 +17,9 @@ export default class TypingSession {
     this.backtrack = false;
     this.seconds = 0;
     this.timer = null;
-    this.paused = true;
-    this.finished = false;
+    this.state = state;
+    this.setState = setState;
     this.handleInput = this.handleInput.bind(this);
-    this.reset = this.reset.bind(this);
   }
 
   reset() {
@@ -36,8 +43,7 @@ export default class TypingSession {
     this.incorrect = 0;
     this.collateral = 0;
     this.seconds = 0;
-    this.paused = true;
-    this.finished = false;
+    this.setState(ts.INACTIVE);
   }
 
   // Manage classes of letter nodes
@@ -71,7 +77,7 @@ export default class TypingSession {
 
   // Toggle b/w 'backtrack' state - this is turned on after typing errors
   setBacktrack(on) {
-    console.log('backtrack on: ', on);
+    // console.log('backtrack on: ', on);
     this.backtrack = on;
     let ele = document.getElementById(this.elementId);
     ele.classList.remove('backtrack');
@@ -104,14 +110,14 @@ export default class TypingSession {
   }
 
   startTimer() {
-    this.paused = false;
+    this.setState(ts.ACTIVE);
     this.timer = setInterval(() => {
       ++this.seconds;
     }, 1000);
   }
 
   stopTimer() {
-    this.paused = true;
+    this.setState(this.state | ts.PAUSED);
     clearInterval(this.timer);
   }
 
@@ -129,7 +135,7 @@ export default class TypingSession {
   }
 
   pause() {
-    if (this.paused) {
+    if (this.state & ts.PAUSED) {
       this.startTimer();
     } else {
       this.stopTimer();
@@ -149,13 +155,14 @@ export default class TypingSession {
     return !this.backtrack && this.activeIndex === this.nodes.length - 1;
   }
 
-  setFinished(on) {
-    this.finished = on;
+  setFinished(finished) {
     let cl = document.getElementById(this.elementId).classList;
     cl.remove('finished');
-    if (on) {
+    if (finished) {
+      console.log('finished: ', finished);
       cl.add('finished');
       this.removeClass('active');
+      this.setState(ts.FINISHED);
     }
   }
 
@@ -204,8 +211,8 @@ export default class TypingSession {
         (key === target || (isNewline && target === '\n'))
       ) {
         if (this.isFinished()) {
-          this.setFinished(true);
           this.stop();
+          this.setFinished(true);
           console.log(this.report());
         } else this.step({ newline: isNewline });
       } else {
