@@ -1,5 +1,5 @@
 <template>
-  <p>{{ seconds }} seconds elapsed</p>
+  <p>{{ $filters.minutes(seconds)  }}</p>
 </template>
 
 <script>
