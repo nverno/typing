@@ -13,7 +13,7 @@
         <button @click="tsession.pause" id="pause">
           {{ state & ts.PAUSED ? "Unpause" : "Pause" }}
           <p>
-            <span>(Alt-P)</span>
+            <span>(Ctrl-Enter)</span>
           </p>
         </button>
 
@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <Timer :seconds="seconds" />
+    <Timer :seconds="seconds" :state="state" />
     <slot />
 
     <div v-if="Boolean(state & ts.FINISHED)">
@@ -57,12 +57,12 @@ export default {
 
     const handleBinding = (event) => {
       if (event.ctrlKey && event.key === 'Enter') {
-        console.log('Handle Ctrl-Enter');
-        tsession.start();
-      } else if (event.altKey && event.key === 'p') {
-        console.log('Handle Alt-p');
-        tsession.pause();
-      }
+        if (state.value == ts.INACTIVE ) {
+          tsession.start();
+        } else if (state.value & ts.ACTIVE) {
+          tsession.pause();
+        }
+      } 
     };
     
     onMounted(() => {

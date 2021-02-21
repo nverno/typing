@@ -78,3 +78,11 @@ code.finished span.wascollateral {
 code.finished span.wasincorrect {
   color: var(--np-wasincorrect);
 }
+
+/* Paused */
+.paused {
+  --np-active-background: var(--np-paused-background);
+}
+code.paused span.active {
+  outline: none;
+}

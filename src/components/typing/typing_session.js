@@ -30,6 +30,7 @@ export default class TypingSession {
     this.stop();
     this.setBacktrack(false);
     this.setFinished(false);
+    this.setPaused(false);
     this.nodes.forEach(node => {
       node.classList.remove(
         'active',
@@ -96,6 +97,12 @@ export default class TypingSession {
     if (on) ele.classList.add('backtrack');
   }
 
+  setPaused(on) {
+    let ele = document.getElementById(this.elementId);
+    ele.classList.remove('paused');
+    if (on) ele.classList.add('paused');
+  }
+
   // mark the letter node at point as active, removing previous states
   markActive() {
     this.updateClasses({
@@ -150,8 +157,10 @@ export default class TypingSession {
   pause() {
     if (this.state & ts.PAUSED) {
       this.startTimer();
+      this.setPaused(false);
     } else {
       this.stopTimer();
+      this.setPaused(true);
     }
   }
 
