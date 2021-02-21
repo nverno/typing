@@ -1,5 +1,5 @@
 <template>
-  <div class="results">
+  <div class="results" ref="results">
     <h1>Results Summary</h1>
 
     <table class="results-table">
@@ -116,6 +116,11 @@ export default {
       const { typeable, } = this.stats;
       return (typeable / this.charsPerWord) * (1 / this.minutes);
     }
+  },
+  mounted() {
+    const ele = this.$refs['results'];
+    ele.scrollIntoView({ behavior: 'smooth' });
+    /* window.scrollTo(0, ele.offsetTop); */
   }
 }
 </script>
