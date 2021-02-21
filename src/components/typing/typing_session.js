@@ -9,11 +9,15 @@ export const ts = {
 export default class TypingSession {
   constructor(elementId, state, setState) {
     this.elementId = elementId;
-    this.nodes = null;
+    this.nodes = [];
     this.activeIndex = 0;
-    this.incorrect = 0;
-    this.collateral = 0;
-    this.misses = {};
+    this.typeable = null;
+    this.stats = {
+      incorrect: 0,
+      collateral: 0,
+      backspaces: 0,
+      misses: {},
+    };
     this.backtrack = false;
     this.seconds = 0;
     this.timer = null;
@@ -26,24 +30,32 @@ export default class TypingSession {
     this.stop();
     this.setBacktrack(false);
     this.setFinished(false);
-    if (this.nodes) {
-      Array.from(this.nodes).forEach(node => {
-        node.classList.remove(
-          'active',
-          'incorrect',
-          'collateral',
-          'wasincorrect',
-          'wascollateral'
-        );
-        node.classList.add('pending');
-      });
-    }
-    this.misses = {};
+    this.nodes.forEach(node => {
+      node.classList.remove(
+        'active',
+        'incorrect',
+        'collateral',
+        'wasincorrect',
+        'wascollateral'
+      );
+      node.classList.add('pending');
+    });
+    this.stats = {
+      incorrect: 0,
+      collateral: 0,
+      backspaces: 0,
+      misses: {},
+    };
     this.activeIndex = 0;
-    this.incorrect = 0;
-    this.collateral = 0;
     this.seconds = 0;
-    this.setState(ts.INACTIVE);
+    this.state = this.setState(ts.INACTIVE);
+  }
+
+  countTypeable() {
+    return this.nodes.reduce(
+      (acc, n) => acc + Number(!n.classList.contains('skip')),
+      0
+    );
   }
 
   // Manage classes of letter nodes
@@ -98,31 +110,32 @@ export default class TypingSession {
   markIncorrect() {
     if (this.backtrack) {
       this.updateClasses({ add: ['collateral', 'wascollateral'] });
-      ++this.collateral;
+      ++this.stats.collateral;
     } else {
       const c = this.activeChar();
       this.updateClasses({ add: ['incorrect', 'wasincorrect'] });
-      ++this.incorrect;
-      if (this.misses[c]) ++this.misses[c];
-      else this.misses[c] = 1;
+      ++this.stats.incorrect;
+      if (this.stats.misses[c]) ++this.stats.misses[c];
+      else this.stats.misses[c] = 1;
       this.setBacktrack(true);
     }
   }
 
   startTimer() {
-    this.setState(ts.ACTIVE);
+    this.state = this.setState(ts.ACTIVE);
     this.timer = setInterval(() => {
       ++this.seconds;
     }, 1000);
   }
 
   stopTimer() {
-    this.setState(this.state | ts.PAUSED);
+    this.state = this.setState(this.state | ts.PAUSED);
     clearInterval(this.timer);
   }
 
   start() {
-    this.nodes = document.getElementById(this.elementId).childNodes;
+    this.nodes = Array.from(document.getElementById(this.elementId).childNodes);
+    this.typeable = this.typeable || this.countTypeable();
     this.reset();
     this.startTimer();
     this.markActive();
@@ -143,11 +156,11 @@ export default class TypingSession {
   }
 
   // session statistics
-  report() {
+  getStats() {
     return {
-      incorrect: this.incorrect,
-      collateral: this.collateral,
-      misses: this.misses,
+      typeable: this.typeable,
+      seconds: this.seconds,
+      ...this.stats,
     };
   }
 
@@ -159,10 +172,9 @@ export default class TypingSession {
     let cl = document.getElementById(this.elementId).classList;
     cl.remove('finished');
     if (finished) {
-      console.log('finished: ', finished);
       cl.add('finished');
       this.removeClass('active');
-      this.setState(ts.FINISHED);
+      this.state = this.setState(ts.FINISHED);
     }
   }
 
@@ -196,12 +208,14 @@ export default class TypingSession {
 
   // Main event handler to process typing input
   handleInput(event) {
+    if (this.state.value & ts.PAUSED) return;
     if (event.ctrlKey || event.altKey || event.metaKey || event.key === 'Shift')
       return;
     event.preventDefault();
 
     const key = event.key;
     if (key === 'Backspace') {
+      ++this.stats.backspaces;
       this.step({ backspace: true });
     } else {
       const target = this.nodes[this.activeIndex].innerText;
@@ -213,7 +227,7 @@ export default class TypingSession {
         if (this.isFinished()) {
           this.stop();
           this.setFinished(true);
-          console.log(this.report());
+          console.log(this.getStats());
         } else this.step({ newline: isNewline });
       } else {
         this.markIncorrect();

@@ -18,10 +18,15 @@
 
     <Timer :seconds="seconds" />
     <slot />
+
+    <div v-if="Boolean(state & ts.FINISHED)">
+      <Results :stats="tsession.getStats()" />
+    </div>
   </div>
 </template>
 
 <script>
+import Results from '../Results';
 import TypingSession, { ts } from './typing_session';
 import Timer from '../Timer';
 import { reactive, ref, toRefs, } from 'vue';
@@ -31,6 +36,7 @@ export default {
   props: ['codeId'],
   components: {
     Timer,
+    Results,
   },
 
   setup(props) {
@@ -39,7 +45,8 @@ export default {
       return (state.value = newState);
     };
     const tsession = reactive(new TypingSession(props.codeId, state, setState));
-
+    window.ts = tsession;
+    
     let { seconds } = toRefs(tsession);
     return {
       ts,
