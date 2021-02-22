@@ -1,5 +1,5 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
+  <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
   <p>Practice typing code.  See your speed and discover problem keys and
     combinations.</p>
   <p class="subtitle">Based off <a href="https://typing.io">typing.io</a></p>
