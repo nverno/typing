@@ -42,7 +42,7 @@ import { onMounted, onUnmounted, reactive, ref, toRefs } from "vue";
 export default {
   name: "TypingTracker",
   props: {
-    codeId: String
+    codeId: String,
   },
   components: {
     TimerDisplay,
@@ -58,22 +58,22 @@ export default {
     window.ts = tsession;
 
     const handleBinding = (event) => {
-      if (event.ctrlKey && event.key === 'Enter') {
-        if (state.value == ts.INACTIVE ) {
+      if (event.ctrlKey && event.key === "Enter") {
+        if (state.value == ts.INACTIVE) {
           tsession.start();
         } else if (state.value & ts.ACTIVE) {
           tsession.pause();
         }
-      } 
+      }
     };
-    
+
     onMounted(() => {
       window.addEventListener("keydown", handleBinding);
-    })
+    });
 
     onUnmounted(() => {
       window.removeEventListener("keydown", handleBinding);
-    })
+    });
 
     let { seconds } = toRefs(tsession);
     return {
@@ -110,7 +110,8 @@ button {
   margin-right: 10px;
 }
 
-#go, #pause {
+#go,
+#pause {
   float: left;
   p {
     margin: 0;

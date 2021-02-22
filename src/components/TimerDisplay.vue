@@ -1,15 +1,13 @@
 <template>
   <div class="timer">
-    <span :class="className">
-      {{ $filters.minutes(seconds) }}
-    </span>
+    <span :class="className">{{ $filters.minutes(seconds) }}</span>
   </div>
 </template>
 
 <script>
-import { ts } from './typing/typing_session';
+import { ts } from "./typing/typing_session";
 export default {
-  name: 'TimerDisplay',
+  name: "TimerDisplay",
   props: {
     seconds: Number,
     state: Number,
@@ -17,14 +15,14 @@ export default {
   computed: {
     className() {
       const paused = this.state & ts.PAUSED,
-            active = !paused && this.state & ts.ACTIVE;
+        active = !paused && this.state & ts.ACTIVE;
       return {
-        'timer-paused': paused,
-        'timer-active': active,
+        "timer-paused": paused,
+        "timer-active": active,
       };
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .timer {

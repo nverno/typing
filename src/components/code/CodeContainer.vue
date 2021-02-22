@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import HighlightCode from './HighlightCode';
+import HighlightCode from "./HighlightCode";
 import { parseCode } from "./code";
 import "./code.scss";
 
@@ -16,8 +16,8 @@ export default {
     setupCode() {
       const code = document.querySelector("pre code");
       let res = parseCode(code);
-      code.innerHTML = res.map(el => el.outerHTML).join('');
-    }
+      code.innerHTML = res.map((el) => el.outerHTML).join("");
+    },
   },
   data() {
     return {

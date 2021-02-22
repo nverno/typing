@@ -14,7 +14,7 @@
               <td>Change:</td>
               <td>
                 <form @submit.prevent="updateLanguage">
-                  <input v-model="language" type="text">
+                  <input v-model="language" type="text" />
                 </form>
               </td>
             </tr>
@@ -37,17 +37,17 @@ export default {
   props: {
     code: String,
   },
-  emits: ['highlight-code'],
+  emits: ["highlight-code"],
   data() {
     return {
-      language: 'javascript',
-      detected: 'javascript',
+      language: "javascript",
+      detected: "javascript",
     };
   },
   computed: {
     languageClass() {
       return `hljs ${this.language || "javascript"}`;
-    }
+    },
   },
   mounted() {
     this.highlightAll();
@@ -64,8 +64,8 @@ export default {
       let ele = document.querySelector("#code");
       ele.innerHTML = this.code;
       this.highlightAll();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -98,7 +98,8 @@ pre {
     border: none;
     border-bottom: 1px solid grey;
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       background-color: #fdf6e3;
     }
   }

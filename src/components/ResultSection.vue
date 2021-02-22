@@ -6,12 +6,16 @@
       <tbody>
         <tr>
           <td>typeable characters</td>
-          <td><span class="value">{{ stats.typeable }}</span></td>
+          <td>
+            <span class="value">{{ stats.typeable }}</span>
+          </td>
           <td class="derivation"></td>
         </tr>
         <tr>
           <td>typed characters</td>
-          <td><span class="value">{{ total }}</span></td>
+          <td>
+            <span class="value">{{ total }}</span>
+          </td>
           <td class="derivation">
             <div class="contents">
               <table class="calculations">
@@ -42,17 +46,17 @@
 
         <tr>
           <td>unproductive keystroke overhead</td>
-          <td><span class="value">{{ $filters.percent(overhead) }}</span></td>
+          <td>
+            <span class="value">{{ $filters.percent(overhead) }}</span>
+          </td>
           <td class="derivation">
             <div class="computation">
               <span class="fraction">
                 <div class="numerator">
                   {{ total }} typed characters -
-                  {{ stats.typeable }} typeable characters 
-                </div>
-                <div class="denominator">
                   {{ stats.typeable }} typeable characters
                 </div>
+                <div class="denominator">{{ stats.typeable }} typeable characters</div>
               </span>
             </div>
           </td>
@@ -70,12 +74,8 @@
           <td class="derivation">
             <div class="computation">
               <span class="fraction">
-                <div class="numerator">
-                  {{ stats.typeable }} typeable characters
-                </div>
-                <div class="denominator">
-                  {{ charsPerWord }} characters per word
-                </div>
+                <div class="numerator">{{ stats.typeable }} typeable characters</div>
+                <div class="denominator">{{ charsPerWord }} characters per word</div>
               </span>
               <span class="times">x</span>
               <span class="fraction">
@@ -92,7 +92,7 @@
 
 <script>
 export default {
-  name: 'ResultSection',
+  name: "ResultSection",
   props: {
     stats: Object,
   },
@@ -115,16 +115,16 @@ export default {
       return (this.total - typeable) / typeable;
     },
     wpm() {
-      const { typeable, } = this.stats;
+      const { typeable } = this.stats;
       return (typeable / this.charsPerWord) * (1 / this.minutes);
-    }
+    },
   },
   mounted() {
-    const ele = this.$refs['results'];
-    ele.scrollIntoView({ behavior: 'smooth' });
+    const ele = this.$refs["results"];
+    ele.scrollIntoView({ behavior: "smooth" });
     /* window.scrollTo(0, ele.offsetTop); */
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -141,7 +141,7 @@ td {
   }
 
   tr td {
-    padding: 0 .5em 2em;
+    padding: 0 0.5em 2em;
     line-height: 1.1em;
   }
 }
@@ -160,13 +160,13 @@ td {
   width: 100%;
   font-size: 1.5em;
 
-  &>tbody>tr>td:first-child {
+  & > tbody > tr > td:first-child {
     text-align: right;
     color: #888;
     width: 40%;
   }
 
-  &>tbody>tr>td:nth-child(2) {
+  & > tbody > tr > td:nth-child(2) {
     width: 10%;
     padding-left: 1em;
   }
@@ -177,7 +177,7 @@ td {
   line-height: 1.1em;
   tr td {
     text-align: left;
-    padding: .25em 0.5em;
+    padding: 0.25em 0.5em;
   }
   tr td:first-child {
     width: 5%;
@@ -203,8 +203,8 @@ td {
   display: inline-block;
   text-align: center;
   div {
-    padding: .25em 0;
-    margin: 0 .2em;
+    padding: 0.25em 0;
+    margin: 0 0.2em;
   }
   .numerator {
     border-bottom: 1px solid #999;
@@ -214,7 +214,6 @@ td {
 .times {
   display: inline-block;
   font-size: 2em;
-  padding: 0 .25em .5em;
+  padding: 0 0.25em 0.5em;
 }
-
 </style>

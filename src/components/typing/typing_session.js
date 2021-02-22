@@ -37,7 +37,7 @@ export default class TypingSession {
         'incorrect',
         'collateral',
         'wasincorrect',
-        'wascollateral'
+        'wascollateral',
       );
       node.classList.add('pending');
     });
@@ -55,7 +55,7 @@ export default class TypingSession {
   countTypeable() {
     return this.nodes.reduce(
       (acc, n) => acc + Number(!n.classList.contains('skip')),
-      0
+      0,
     );
   }
 

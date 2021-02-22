@@ -13,9 +13,9 @@ export const parseElement = (ele, cname) => {
     return Array.from(ele.childNodes).reduce(
       (acc, e) =>
         acc.concat(
-          parseElement(e, cname + (e.className ? ' ' + e.className : ''))
+          parseElement(e, cname + (e.className ? ' ' + e.className : '')),
         ),
-      []
+      [],
     );
   }
 
