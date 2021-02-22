@@ -9,8 +9,11 @@
 <script>
 import { ts } from './typing/typing_session';
 export default {
-  name: 'Timer',
-  props: ['seconds', 'state'],
+  name: 'TimerDisplay',
+  props: {
+    seconds: Number,
+    state: Number,
+  },
   computed: {
     className() {
       const paused = this.state & ts.PAUSED,

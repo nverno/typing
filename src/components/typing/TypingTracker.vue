@@ -24,27 +24,29 @@
       </div>
     </div>
 
-    <Timer :seconds="seconds" :state="state" />
+    <TimerDisplay :seconds="seconds" :state="state" />
     <slot />
 
     <div v-if="Boolean(state & ts.FINISHED)">
-      <Results :stats="tsession.getStats()" />
+      <ResultSection :stats="tsession.getStats()" />
     </div>
   </div>
 </template>
 
 <script>
-import Results from "../Results";
+import ResultSection from "../ResultSection";
 import TypingSession, { ts } from "./typing_session";
-import Timer from "../Timer";
+import TimerDisplay from "../TimerDisplay";
 import { onMounted, onUnmounted, reactive, ref, toRefs } from "vue";
 
 export default {
-  name: "Typing",
-  props: ["codeId"],
+  name: "TypingTracker",
+  props: {
+    codeId: String
+  },
   components: {
-    Timer,
-    Results,
+    TimerDisplay,
+    ResultSection,
   },
 
   setup(props) {

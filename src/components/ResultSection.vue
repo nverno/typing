@@ -92,8 +92,10 @@
 
 <script>
 export default {
-  name: 'Results',
-  props: ['stats'],
+  name: 'ResultSection',
+  props: {
+    stats: Object,
+  },
   data() {
     return {
       charsPerWord: 5,

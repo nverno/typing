@@ -34,7 +34,9 @@ import hljs from "highlight.js";
 /* NOTE: highlightjs and vue-highlightjs aren't working with vue3 (2/17/21) */
 export default {
   name: "HighlightedCode",
-  props: ['code'],
+  props: {
+    code: String,
+  },
   emits: ['highlight-code'],
   data() {
     return {
@@ -42,13 +44,13 @@ export default {
       detected: 'javascript',
     };
   },
-  mounted() {
-    this.highlightAll();
-  },
   computed: {
     languageClass() {
       return `hljs ${this.language || "javascript"}`;
     }
+  },
+  mounted() {
+    this.highlightAll();
   },
   methods: {
     highlightAll() {

@@ -8,7 +8,7 @@ import { parseCode } from "./code";
 import "./code.scss";
 
 export default {
-  name: "Code",
+  name: "CodeContainer",
   components: {
     HighlightCode,
   },
