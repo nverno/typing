@@ -90,7 +90,6 @@ export default class TypingSession {
 
   // Toggle b/w 'backtrack' state - this is turned on after typing errors
   setBacktrack(on) {
-    // console.log('backtrack on: ', on);
     this.backtrack = on;
     let ele = document.getElementById(this.elementId);
     ele.classList.remove('backtrack');
@@ -236,7 +235,7 @@ export default class TypingSession {
         if (this.isFinished()) {
           this.stop();
           this.setFinished(true);
-          console.log(this.getStats());
+          // console.log(this.getStats());
         } else this.step({ newline: isNewline });
       } else {
         this.markIncorrect();
