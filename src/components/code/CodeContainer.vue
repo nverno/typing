@@ -12,13 +12,6 @@ export default {
   components: {
     HighlightCode,
   },
-  methods: {
-    setupCode() {
-      const code = document.querySelector("pre code");
-      let res = parseCode(code);
-      code.innerHTML = res.map((el) => el.outerHTML).join("");
-    },
-  },
   data() {
     return {
       code: `function initProps (vm: Component, propsOptions: Object) {`,
@@ -70,6 +63,13 @@ export default {
     toggleObserving(true)
   }`,
     };
+  },
+  methods: {
+    setupCode() {
+      const code = document.querySelector("pre code");
+      let res = parseCode(code);
+      code.innerHTML = res.map((el) => el.outerHTML).join("");
+    },
   },
 };
 </script>
