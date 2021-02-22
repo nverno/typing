@@ -16,7 +16,7 @@
     "deploy": "gh-pages -d dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "main": "index.js",
+  "main": "src/main.js",
   "dependencies": {
     "core-js": "^3.6.5",
     "highlight.js": "^10.6.0",
