@@ -220,7 +220,7 @@ export default class TypingSession {
     if (event.ctrlKey || event.altKey || event.metaKey || event.key === 'Shift')
       return;
     event.preventDefault();
-
+    // console.log("DEBUG: this.state.value & ts.PAUSED: ", this.state.value & ts.PAUSED);
     const key = event.key;
     if (key === 'Backspace') {
       ++this.stats.backspaces;
